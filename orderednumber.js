@@ -29,19 +29,42 @@ fs.readFile(inputFile, encoding, (err, inputContent) => {
     console.timeEnd('Split incoming data in');
     // The first line of the file indicates the amount of data that should be processed
     const amountOfNumbersToCalculate = linesOfTheInputFile[0];
-    var outputContent = '';   // Holds the content of the file that should be printed in the output file
 
-    // Now, let's start looking at the content of every line of the incomming file!
     console.time('Ordered numbers calculated in');
-    for(var currentInputNumberIndex = 1; currentInputNumberIndex <= amountOfNumbersToCalculate; currentInputNumberIndex++) {
-        let currentInputNumber = safeLineRead(linesOfTheInputFile[currentInputNumberIndex]);
-        let correspondingOrderedNumber = calculateCorrespondingOrderedNumber(currentInputNumber);
-        outputContent += `Caso ${currentInputNumberIndex}: N=${currentInputNumber}, O=${correspondingOrderedNumber}\n`;
-    }
+    var outputContent = calculateAllOrderedNumbers(linesOfTheInputFile, amountOfNumbersToCalculate);
     console.timeEnd('Ordered numbers calculated in');
 
     saveResults(outputContent);
 });
+
+
+/**
+ * For every line of the input file, determines the corresponding ordered number
+ * @param {string[]} linesOfTheInputFile - Array of lines of the file
+ * @param {number} amountOfNumbersToCalculate - Amount of numbers to be calculated
+ * @return {string} - Complete result that should be printed on the output file
+ */
+function calculateAllOrderedNumbers(linesOfTheInputFile, amountOfNumbersToCalculate) {
+    var outputContent = '';
+    // Now, let's start looking at the content of every line of the incomming file!
+    for(var currentInputNumberIndex = 1; currentInputNumberIndex <= amountOfNumbersToCalculate; currentInputNumberIndex++) {
+        let currentInputNumber = safeLineRead(linesOfTheInputFile[currentInputNumberIndex]);
+        let correspondingOrderedNumber = calculateCorrespondingOrderedNumber(currentInputNumber);
+        outputContent += printLine(currentInputNumberIndex, currentInputNumber, correspondingOrderedNumber);
+    }
+    return outputContent;
+}
+
+/**
+ * Prints a single line for the results file
+ * @param {number} currentInputNumberIndex - Index of the number. Is the test case number
+ * @param {number} currentInputNumber - The number provided from the input
+ * @param {number} correspondingOrderedNumber - The calculated ordered number for currentInputNumber
+ * @return {string} - Single line for the result file to be printed
+ */
+function printLine(currentInputNumberIndex, currentInputNumber, correspondingOrderedNumber) {
+    return `Caso ${currentInputNumberIndex}: N=${currentInputNumber}, O=${correspondingOrderedNumber}\n`;
+}
 
 /**
  * Reads a line in a safe way. The purpose is to avoid a possible automatic cast of the input as number
@@ -49,7 +72,11 @@ fs.readFile(inputFile, encoding, (err, inputContent) => {
  * @return {string} - Line readed as string
  */
 function safeLineRead(line) {
-    return ''+line;
+    if (line) {
+        return ''+line;
+    } else {
+        return '';
+    }
 }
 
 /**

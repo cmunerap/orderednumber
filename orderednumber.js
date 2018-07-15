@@ -31,6 +31,7 @@ fs.readFile(inputFile, encoding, (err, inputContent) => {
     const amountOfNumbersToCalculate = linesOfTheInputFile[0];
     var outputContent = '';   // Holds the content of the file that should be printed in the output file
 
+    // Now, let's start looking at the content of every line of the incomming file!
     console.time('Ordered numbers calculated in');
     for(var currentInputNumberIndex = 1; currentInputNumberIndex <= amountOfNumbersToCalculate; currentInputNumberIndex++) {
         let currentInputNumber = safeLineRead(linesOfTheInputFile[currentInputNumberIndex]);

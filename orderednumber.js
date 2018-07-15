@@ -1,8 +1,6 @@
 /**
  * Ordered number challenge PSL - NGColombia
  * Author: Cristian Múnera
- * ID: 8027942
- * Project: Xenial PoS
 */
 
 console.time('Executed in');

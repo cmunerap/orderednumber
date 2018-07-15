@@ -33,7 +33,7 @@ fs.readFile(inputFile, encoding, (err, inputContent) => {
 
     console.time('Ordered numbers calculated in');
     for(var currentInputNumberIndex = 1; currentInputNumberIndex <= amountOfNumbersToCalculate; currentInputNumberIndex++) {
-        let currentInputNumber = linesOfTheInputFile[currentInputNumberIndex];
+        let currentInputNumber = safeLineRead(linesOfTheInputFile[currentInputNumberIndex]);
         let correspondingOrderedNumber = calculateCorrespondingOrderedNumber(currentInputNumber);
         outputContent += `Caso ${currentInputNumberIndex}: N=${currentInputNumber}, O=${correspondingOrderedNumber}\n`;
     }
@@ -43,9 +43,17 @@ fs.readFile(inputFile, encoding, (err, inputContent) => {
 });
 
 /**
- * Stores the results of the calculated ordered numbers in a file called 'salida.txt'
- * The file will be saved in the same folder of the input file provided
- * @param {string} outputContent - The content of the results that will be saved in the file
+ * Reads a line in a safe way. The purpose is to avoid a possible automatic cast of the input as number
+ * @param {string} line - The incomming line to be readed
+ */
+function safeLineRead(line) {
+    return ''+line;
+}
+
+/**
+ * Returns an array of the lines of the file
+ * @param {string} inputContent - The incomming content of the input file
+ * @return {string[]} - Array of the lines of the incomming file
  */
 function getLinesOfFile(inputContent) {
     return inputContent.split(/\n/);
@@ -78,11 +86,11 @@ function saveResults(outputContent) {
 
 /**
  * Calculates the ordered number that correspond to the provided number
- * @param {number} number - The input number used to calculate the ordered number
+ * @param {number} string - The input number used to calculate the ordered number
  * @return {number} - Corresponding ordered number
  */
 function calculateCorrespondingOrderedNumber(number) {
-    if (number < 10) return number; // Number lest than 10 is actually an ordered number. Happy path!
+    if (+number < 10) return number; // Number lest than 10 is actually an ordered number. Happy path!
     
     var listOfDigits;               // The digits of the provided number
     var previousDigit = 0;          // Used to check the previoust digit (as number) against the current
@@ -114,7 +122,7 @@ function calculateCorrespondingOrderedNumber(number) {
             }
         }
     }
-    return convertArrayOfDigitsToNumber(listOfDigits);
+    return convertArrayOfDigitsToNumberString(listOfDigits);
 }
 
 /**
@@ -142,8 +150,8 @@ function convertNumberToArrayOfDigits(number) {
  * @param {string[]} digits - The input array of digits that should be converted into a number
  * @return {number} - Number that corresponds to the array of digits
  */
-function convertArrayOfDigitsToNumber(digits) {
-    return +digits.join('');
+function convertArrayOfDigitsToNumberString(digits) {
+    return digits.join('');
 }
 
 /**
